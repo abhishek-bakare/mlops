@@ -21,65 +21,36 @@ Expermients with DVC:
 14> Do "dvc exp run", it will create a new dvc.yaml(if already not there) and dvclive directory (each run will be considered as an experiment by DVC)
 15> Do "dvc exp show" on terminal to see the experiments or use extension on VSCode (install dvc extension)
 16> Do "dvc exp remove {exp-name}" to remove exp (optional) | "dvc exp apply {exp-name}" to reproduce prev exp
+dvc exp apply {exp-name}  to apply/reprod a specific experiment
 17> Change params, re-run code (produce new experiments)
 18> Now git add, commit, push
+19> See "dvc dag" to see flow chart diagram. (Directed Acyclic Graph)
+
+DVC with S3
+1. pip install dvc[s3]
+2. Login to AWS, create a user for test purpose and create a bucket (in real IT we use IAM roles in github actions, EKS IRSA or pod identity)
+3. aws configure
+4. dvc remote add -d dvcstore s3://bucketname       now check .dvc/config file u can see changes
+5. dvc commit and push (no need to do dvc add)
+6. Finally git add, commit, push
+
+
+Notes on how uploading works:
+When we have a massive file say data/train.csv which is of 5gb and runs dvc add data/train.csv it does 3 things:
+1. Hashes the file: i calculates MD5 hash of file 5gb e.g c3getf6732vyuf62... moves actual heavy file into local cache .dvc/cache
+2. Ignores the heavy file in Git: It automatically adds data/train.csv to .gitignore 
+3. Creates a tiny pointer 100 byte yaml file named data/train.csv.dvc  Git tracks this
+4. S3 stores file like this s3://company-mlops-bucket/dvc-store/files/md5/a1/b2c3d4e5f67890abcdef1234567890
+-----------------------------------------------------------------
+Day 6:
+MLflow Agenda
+1. Experiment overview
+2. DVC vc MLflow
+3. MLflow for data science
+4. Code demonstration/mini project
+5. MLflow server architecture (AWS/Dagshub)
+6. Model registry
 
 
 
 
-
-
-
-
-
-
--------------------------------------------------------------------------------
-
-params.yaml setup:
-1> import yaml
-2> add func:
-def load_params(params_path: str) -> dict:
-    """Load parameters from a YAML file."""
-    try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        logger.debug('Parameters retrieved from %s', params_path)
-        return params
-    except FileNotFoundError:
-        logger.error('File not found: %s', params_path)
-        raise
-    except yaml.YAMLError as e:
-        logger.error('YAML error: %s', e)
-        raise
-    except Exception as e:
-        logger.error('Unexpected error: %s', e)
-        raise
-3> Add to main():
-
-# data_ingestion
-params = load_params(params_path='params.yaml')
-test_size = params['data_ingestion']['test_size']
-
-# feature_engineering
-params = load_params(params_path='params.yaml')
-max_features = params['feature_engineering']['max_features']
-
-# model_building
-params = load_params('params.yaml')['model_building']
-
--------------------------------------------------------------------------------
-
--------------------------------------------------------------------------------
-
-dvclive code block:
-1> import dvclive and yaml:
-from dvclive import Live
-import yaml
-2> Add the load_params function and initiate "params" var in main
-3> Add below code block to main:
-with Live(save_dvc_exp=True) as live:
-    live.log_metric('accuracy', accuracy_score(y_test, y_test))
-    live.log_metric('precision', precision_score(y_test, y_test))
-    live.log_metric('recall', recall_score(y_test, y_test))
-
-    live.log_params(params)

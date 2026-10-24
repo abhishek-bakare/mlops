@@ -11,7 +11,7 @@ class Employee:
         print("This travel method calls manually")
         print(f"Employee is now travelling to {destination}")
 
-# create an object of the class
+# create an object of the class, here sam is object
 sam = Employee("Abhishek","123","DevOps","5L")
 
 print(sam.salary,sam.id)

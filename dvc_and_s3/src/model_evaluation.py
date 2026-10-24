@@ -131,7 +131,7 @@ def main():
         metrics = evaluate_model(clf, X_test, y_test)
 
         # experiment tracking using dcvlive
-        with Live(save_dvc_exp=True) as live:
+        with Live(save_dvc_exp=True) as live:       # save_dvc_exp saves records whenever you runs the experiment if True
             live.log_metric('accuracy', accuracy_score(y_test, y_test))
             live.log_metric('precision', precision_score(y_test, y_test))
             live.log_metric('recall', recall_score(y_test, y_test))

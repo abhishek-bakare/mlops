@@ -1,0 +1,91 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: ff9f6870f7b3c60ff1aa1385741ac84e
+      size: 4690
+    outs:
+    - path: /Projects/MLops/dvc_and_s3/data/raw
+      hash: md5
+      md5: 90b831f08fe83068712bf270b4da736c.dir
+      size: 490192
+      nfiles: 2
+  data_preprocessing:
+    cmd: python src/data_preprocessing.py
+    deps:
+    - path: /Projects/MLops/dvc_and_s3/data/raw
+      hash: md5
+      md5: 90b831f08fe83068712bf270b4da736c.dir
+      size: 490192
+      nfiles: 2
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: 8a7f09854327ebcb67466ce628ff325f
+      size: 4951
+    outs:
+    - path: /Projects/MLops/dvc_and_s3/dvc_and_s3/data/interim
+      hash: md5
+      md5: ea57f91173c4c7f7dfec2838c6a94d84.dir
+      size: 266239
+      nfiles: 2
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+    - path: /Projects/MLops/dvc_and_s3/dvc_and_s3/data/interim
+      hash: md5
+      md5: ea57f91173c4c7f7dfec2838c6a94d84.dir
+      size: 266239
+      nfiles: 2
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 822c5ca47297ced00747b49fb592c433
+      size: 5964
+    params:
+      params.yaml:
+        feature_engineering.max_features: 50
+    outs:
+    - path: /Projects/MLops/dvc_and_s3/dvc_and_s3/data/processed
+      hash: md5
+      md5: 7bc1ca2beb914cffce9bfeef5c22a257.dir
+      size: 1183168
+      nfiles: 2
+  model_building:
+    cmd: python src/model_building.py
+    deps:
+    - path: /Projects/MLops/dvc_and_s3/dvc_and_s3/data/interim
+      hash: md5
+      md5: ea57f91173c4c7f7dfec2838c6a94d84.dir
+      size: 266239
+      nfiles: 2
+    - path: src/model_building.py
+      hash: md5
+      md5: a30b993795c828cead59466639b06914
+      size: 5073
+    params:
+      params.yaml:
+        model_building.n_estimators: 22
+        model_building.random_state: 2
+    outs:
+    - path: /Projects/MLops/dvc_and_s3/models/model.pkl
+      hash: md5
+      md5: deecd87e628fd5b482d333fb726ecc0b
+      size: 882743
+  model_evaluation:
+    cmd: python src/model_evaluation.py
+    deps:
+    - path: /Projects/MLops/dvc_and_s3/models/model.pkl
+      hash: md5
+      md5: deecd87e628fd5b482d333fb726ecc0b
+      size: 882743
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 290c03dc2abe7dd8e560f2154e3ede46
+      size: 5965
+    outs:
+    - path: /Projects/MLops/dvc_and_s3/reports/metrics.json
+      hash: md5
+      md5: f527573a9ea4a2a6b9278ebe27d3d72f
+      size: 145

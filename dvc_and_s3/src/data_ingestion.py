@@ -85,7 +85,7 @@ def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str)
 
 def main():
     try:
-        params = load_params(params_path='./dvc_and_s3/params.yaml')
+        params = load_params(params_path='C:/Projects/MLops/dvc_and_s3/params.yaml')
         test_size = params['data_ingestion']['test_size']
         data_path = 'https://raw.githubusercontent.com/vikashishere/Datasets/main/spam.csv'
         df = load_data(data_url=data_path)
@@ -96,7 +96,7 @@ def main():
         train_data, test_data = train_test_split(final_df, test_size=test_size, random_state=2)
         # why we use different train n test data: if we used same data for training n testing then evaluation becomes useless, 
         # model will give 100% result so we use different data
-        save_data(train_data, test_data, data_path='./dvc_and_s3/data')
+        save_data(train_data, test_data, data_path='C:/Projects/MLops/dvc_and_s3/data')
     except Exception as e:
         logger.error('Failed to complete the data ingestion process: %s', e)
         print(f"Error: {e}")
