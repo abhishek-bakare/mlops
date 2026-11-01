@@ -4,3 +4,4 @@
     We can create a object --> create logging ops --> set formatter(basically name of the file or format) --> Set level
     Levels are 5 DEBUG, INFO, WARNING, ERROR, CRITICAL, we can set any level but if we setup lets say WARNING then below warning levels can be visible (warning, error, critical) only.
 3. LabelEncoder: LabelEncoder is scikit tool utility used to convert text based labels into distinct numerical values. Why we use this? ML algorthm cannot understand raw text and its purely mathematical model, labelencoder assigns unique digits to each unique text labels.
+
